@@ -62,7 +62,7 @@ class TemporalSpatialBackbone(torch.nn.Module):
         )
 
         self.cbam_layers = nn.ModuleList(
-            [CBAM(hidden_size) for _ in range(self.num_block)]
+            [CBAM(hidden_size) for _ in range(8)]
         )
 
         encoder_layer = nn.TransformerEncoderLayer(hidden_size, nhead=nhead, batch_first=True)
@@ -141,7 +141,7 @@ class TemporalSpatialBackbone(torch.nn.Module):
             for channel_idx in range(8):
                 feats = collect_feats_temporal[:, :, channel_idx, :]
                 feats = feats.permute(0, 2, 1).unsqueeze(-1)
-                feats = self.cbam_layers[idx](feats)
+                feats = self.cbam_layers[channel_idx](feats)
                 feats = feats.squeeze(-1).permute(0, 2, 1)
                 cbam_outs.append(feats)
 
